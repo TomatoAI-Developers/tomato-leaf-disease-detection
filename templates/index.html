@@ -1184,7 +1184,10 @@
     .models-dialog-note{font-size:.78rem;color:#607481;line-height:1.55;margin-top:1rem}
     @media(max-width:560px){.models-table th,.models-table td{padding:.8rem;font-size:.85rem}.models-table td:first-child{white-space:normal}.models-dialog{border-radius:18px}}
 
-  </style>
+  
+/* Live comparison is now displayed on the separate dashboard. */
+#live-model-comparison{display:none!important;}
+</style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
@@ -1205,6 +1208,7 @@
       <a href="#model-lab">Models</a>
       <a href="#diseases">Diseases</a>
       <a href="#upload-cta">Diagnose</a>
+<a href="/model-compare" class="model-compare-link">Model Compare ↗</a>
     </div>
     
     <a href="#upload-cta" class="nav-cta">Start Scan →</a>
@@ -1729,7 +1733,13 @@
         }
 
         lastResult = data;
-        renderLiveModelComparison(data.model_results);
+        try {
+                sessionStorage.setItem('tomatoaiLastLiveComparison', JSON.stringify({
+                    model_results: data.model_results || [],
+                    timestamp: data.timestamp || new Date().toISOString(),
+                    disease: data.disease || data.predicted_class || ''
+                }));
+            } catch(e) {}
         resultContent.innerHTML = buildResultCard(data);
         resultSection.classList.add('visible');
         resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2353,3 +2363,4 @@
 </body>
 
 </html>
+

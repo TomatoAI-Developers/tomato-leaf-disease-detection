@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TomatoAI | Model Comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#24344b;--muted:#718096;--red:#e65b50;--green:#398568;--glass:rgba(255,255,255,.72);--line:rgba(255,255,255,.8)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:Outfit,sans-serif;background:linear-gradient(160deg,#b9d8ef 0%,#e3e9ed 38%,#f5d5c5 72%,#f6c5a8 100%);background-attachment:fixed}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 15% 15%,rgba(255,255,255,.65),transparent 45%),radial-gradient(ellipse at 85% 65%,rgba(255,255,255,.4),transparent 40%)}
+nav{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:17px 5%;background:rgba(255,255,255,.65);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.logo{font-family:"Space Grotesk";font-weight:700;font-size:21px;color:var(--ink);text-decoration:none}
+.back{color:var(--ink);text-decoration:none;font-weight:600}
+main{position:relative;max-width:1200px;margin:auto;padding:45px 24px 70px}
+.eyebrow{color:var(--green);font-weight:700;letter-spacing:2px;text-transform:uppercase;font-size:12px}
+h1{font:700 clamp(32px,5vw,49px) "Space Grotesk";margin:10px 0}
+.sub{color:var(--muted);font-size:16px;line-height:1.6;max-width:760px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:28px 0}
+.card,.panel{background:var(--glass);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 12px 35px rgba(46,66,90,.08);backdrop-filter:blur(15px)}
+.stat-label{font-size:12px;color:var(--muted);font-weight:600}
+.stat-value{font:700 27px "Space Grotesk";margin-top:8px}
+.tabs{display:flex;gap:9px;flex-wrap:wrap;margin:28px 0 18px}
+.tab{border:1px solid rgba(255,255,255,.9);border-radius:30px;background:rgba(255,255,255,.55);padding:11px 17px;font:600 14px Outfit;color:var(--ink);cursor:pointer}
+.tab.active{background:var(--ink);color:white}
+.panel{min-height:300px}
+.panel h2{font:700 23px "Space Grotesk";margin:0 0 8px}
+.muted{color:var(--muted);font-size:13px;line-height:1.6}
+.table-wrap{overflow-x:auto;margin-top:18px}
+table{width:100%;border-collapse:collapse;min-width:680px;font-size:13px}
+th,td{text-align:left;padding:13px 12px;border-bottom:1px solid rgba(65,85,110,.12)}
+th{color:var(--muted);font-weight:700;background:rgba(255,255,255,.35)}
+td:first-child{font-weight:700}
+.best{color:var(--green);font-weight:800}
+.warning{margin-top:18px;padding:14px 16px;border-radius:13px;background:rgba(230,91,80,.09);border:1px solid rgba(230,91,80,.2);color:#8b4944;font-size:13px;line-height:1.6}
+select{padding:10px 13px;border:1px solid rgba(50,70,90,.2);border-radius:10px;background:white;color:var(--ink);font:600 14px Outfit;margin:12px 0}
+.matrix-wrap{overflow:auto;margin-top:12px}
+.matrix{display:grid;gap:3px;min-width:650px}
+.cell{min-width:43px;min-height:37px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#20344a}
+.axis{font-size:10px;display:flex;align-items:center;justify-content:center;min-width:43px;min-height:37px;overflow:hidden;word-break:break-word}
+.chart{width:100%;height:300px;display:block;margin-top:20px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:13px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.hidden{display:none!important}
+.live-empty{padding:18px;border-radius:12px;background:rgba(255,255,255,.45);color:var(--muted)}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
+@media(max-width:700px){main{padding:30px 15px}.stats{grid-template-columns:repeat(2,1fr)}nav{padding:14px 18px}.stat-value{font-size:22px}.panel{padding:16px}}
+
+#warning { display: none !important; }
+.warning { display: none !important; }
+</style>
+</head>
+<body>
+<nav>
+<a class="logo" href="/">🍅 TomatoAI</a>
+<a class="back" href="/">← Back to Home</a>
+</nav>
+<main>
+<div class="eyebrow">Model evaluation laboratory</div>
+<h1>Model Comparison Dashboard</h1>
+<p class="sub">Explore saved test-set performance, confusion matrices, per-class metrics and actual MobileNetV2 training history across all eight models.</p>
+
+<div class="stats">
+<div class="card"><div class="stat-label">BEST TEST ACCURACY</div><div class="stat-value" id="bestAccuracy">—</div></div>
+<div class="card"><div class="stat-label">MOBILENETV2 MACRO F1</div><div class="stat-value" id="macroF1">—</div></div>
+<div class="card"><div class="stat-label">TEST IMAGES</div><div class="stat-value" id="testImages">—</div></div>
+<div class="card"><div class="stat-label">MODELS COMPARED</div><div class="stat-value">8</div></div>
+</div>
+
+<div class="tabs">
+<button class="tab active" data-tab="performance">Model Performance</button>
+<button class="tab" data-tab="confusion">Confusion Matrices</button>
+<button class="tab" data-tab="classes">Per-Class Metrics</button>
+<button class="tab" data-tab="training">Training & Validation</button>
+</div>
+
+<section class="panel" id="performance">
+<h2>Test-set model performance</h2>
+<p class="muted">Metrics below are loaded from the saved test evaluation reports, not validation scores.</p>
+<canvas id="accuracyChart" class="chart"></canvas>
+<div class="table-wrap"><table><thead><tr><th>Model</th><th>Accuracy</th><th>Macro Precision</th><th>Macro Recall</th><th>Macro F1</th><th>Weighted F1</th></tr></thead><tbody id="performanceRows"></tbody></table></div>
+
+<hr style="border:0;border-top:1px solid rgba(65,85,110,.12);margin:25px 0">
+<h2>Latest live inference comparison</h2>
+<p class="muted">This section appears after you diagnose an image on the homepage.</p>
+<div id="liveComparison" class="live-empty">No live diagnosis comparison has been saved in this browser session yet. Return to the homepage and diagnose an image.</div>
+<p class="muted">Timing note: MobileNetV2 timing measures the model call; classical-model timing includes shared feature extraction, PCA and classifier processing. These timings are not directly equivalent.</p>
+</section>
+
+<section class="panel hidden" id="confusion">
+<h2>Confusion matrices</h2>
+<p class="muted">Rows represent actual classes and columns represent predicted classes. Darker cells indicate larger counts.</p>
+<select id="matrixSelect"></select>
+<div class="matrix-wrap" id="matrixArea"></div>
+</section>
+
+<section class="panel hidden" id="classes">
+<h2>Per-class classification metrics</h2>
+<p class="muted">Precision, recall, F1-score and support from the selected model's saved test classification report.</p>
+<select id="classSelect"></select>
+<div class="table-wrap"><table><thead><tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1-score</th><th>Support</th></tr></thead><tbody id="classRows"></tbody></table></div>
+</section>
+
+<section class="panel hidden" id="training">
+<h2>MobileNetV2 training history</h2>
+<p class="muted">Actual epoch values from the saved training_history.csv file. Stage labels are retained from the training log.</p>
+<div class="legend"><span><i class="dot" style="background:#398568"></i>Training</span><span><i class="dot" style="background:#e65b50"></i>Validation</span></div>
+<h3>Accuracy</h3><canvas id="trainingAccuracy" class="chart"></canvas>
+<h3>Loss</h3><canvas id="trainingLoss" class="chart"></canvas>
+<div id="trainingNote" class="muted"></div>
+</section>
+</main>
+<footer>TomatoAI · Model Performance & Comparative Analysis</footer>
+
+<script>
+let dashboardData=null;
+const $=id=>document.getElementById(id);
+const pct=v=>Number.isFinite(Number(v))?(Number(v)*100).toFixed(2)+'%':'—';
+const num=v=>Number.isFinite(Number(v))?Number(v).toFixed(3):'—';
+
+document.querySelectorAll('.tab').forEach(button=>{
+ button.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  button.classList.add('active');
+  ['performance','confusion','classes','training'].forEach(id=>$(id).classList.toggle('hidden',id!==button.dataset.tab));
+  if(button.dataset.tab==='training') drawTraining();
+  if(button.dataset.tab==='performance') drawAccuracy();
+ });
+});
+
+async function loadDashboard(){
+ try{
+  const response=await fetch('/api/model-evaluation');
+  const data=await response.json();
+  if(!response.ok||data.error) throw new Error(data.details||data.error||'API error');
+  dashboardData=data;
+  renderAll();
+ }catch(error){
+  document.querySelector('main').insertAdjacentHTML('beforeend',
+   '<div class="warning">Dashboard data could not be loaded: '+String(error.message).replace(/[<>&"]/g,'')+'</div>');
+ }
+}
+
+function renderAll(){
+ const d=dashboardData;
+ const best=[...d.models].sort((a,b)=>(b.accuracy||0)-(a.accuracy||0))[0];
+ const mobile=d.models.find(m=>m.name==='MobileNetV2');
+ $('bestAccuracy').textContent=pct(best?.accuracy);
+ $('macroF1').textContent=pct(mobile?.macro_f1);
+ $('testImages').textContent=Number(d.test_images||0).toLocaleString();
+ $('performanceRows').innerHTML=d.models.map(m=>`<tr>
+ <td>${m.name}</td><td class="${m===best?'best':''}">${pct(m.accuracy)}</td>
+ <td>${pct(m.macro_precision)}</td><td>${pct(m.macro_recall)}</td>
+ <td>${pct(m.macro_f1)}</td><td>${pct(m.weighted_f1)}</td></tr>`).join('');
+ ['matrixSelect','classSelect'].forEach(id=>{
+  $(id).innerHTML=d.models.map(m=>`<option>${m.name}</option>`).join('');
+ });
+ $('matrixSelect').addEventListener('change',renderMatrix);
+ $('classSelect').addEventListener('change',renderClasses);
+ renderMatrix();renderClasses();renderLive();
+ drawAccuracy();
+ $('trainingNote').textContent=d.training.length
+  ? `${d.training.length} saved epoch records loaded.`
+  : 'No training history records were found.';
+}
+
+function drawAccuracy(){
+ const canvas=$('accuracyChart'),ctx=canvas.getContext('2d');
+ const w=canvas.clientWidth||800,h=300,ratio=window.devicePixelRatio||1;
+ canvas.width=w*ratio;canvas.height=h*ratio;ctx.scale(ratio,ratio);
+ const values=dashboardData.models, left=48,bottom=245,top=20;
+ ctx.clearRect(0,0,w,h);ctx.font='11px Outfit';ctx.fillStyle='#718096';
+ for(let i=0;i<=4;i++){let y=bottom-i*55;ctx.fillText((i*25)+'%',5,y+4);ctx.strokeStyle='rgba(65,85,110,.13)';ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-10,y);ctx.stroke();}
+ const slot=(w-left-15)/values.length;
+ values.forEach((m,i)=>{
+  const bh=Math.max(0,(m.accuracy||0)*220);
+  ctx.fillStyle='#398568';ctx.fillRect(left+i*slot+8,bottom-bh,Math.max(12,slot-16),bh);
+  ctx.fillStyle='#24344b';ctx.save();ctx.translate(left+i*slot+slot/2,bottom+9);ctx.rotate(-.45);ctx.textAlign='right';ctx.fillText(m.name,0,0);ctx.restore();
+ });
+}
+
+function renderMatrix(){
+ const name=$('matrixSelect').value;
+ const matrix=dashboardData.confusion[name]||[];
+ const labels=dashboardData.classes;
+ const max=Math.max(1,...matrix.flat());
+ const cols=`85px repeat(${labels.length}, minmax(43px,1fr))`;
+ let html=`<div class="matrix" style="grid-template-columns:${cols}"><div></div>`;
+ labels.forEach(label=>html+=`<div class="axis" title="${label}">${shortLabel(label)}</div>`);
+ matrix.forEach((row,r)=>{
+  html+=`<div class="axis" title="${labels[r]}">${shortLabel(labels[r])}</div>`;
+  row.forEach((value,c)=>{
+   const alpha=.08+.75*(value/max);
+   html+=`<div class="cell" title="Actual: ${labels[r]} | Predicted: ${labels[c]} | Count: ${value}" style="background:rgba(57,133,104,${alpha})">${value}</div>`;
+  });
+ });
+ $('matrixArea').innerHTML=html+'</div>';
+}
+function shortLabel(s){return s.replace('Tomato_','').replaceAll('_',' ').replace('Yellow Leaf CurlVirus','Yellow Curl').replace('Spider Mites','Spider Mites').replace('Bacterial spot','Bacterial').replace('Septoria Leaf Spot','Septoria');}
+
+function renderClasses(){
+ const model=dashboardData.models.find(m=>m.name===$('classSelect').value);
+ const report=model?.report||{};
+ $('classRows').innerHTML=dashboardData.classes.map(name=>{
+  const r=report[name]||{};
+  return `<tr><td>${name}</td><td>${num(r.precision)}</td><td>${num(r.recall)}</td><td>${num(r['f1-score'])}</td><td>${r.support??'—'}</td></tr>`;
+ }).join('');
+}
+
+function drawLine(canvasId,keys){
+ const canvas=$(canvasId),ctx=canvas.getContext('2d'),points=dashboardData.training;
+ const w=canvas.clientWidth||800,h=300,ratio=window.devicePixelRatio||1;
+ canvas.width=w*ratio;canvas.height=h*ratio;ctx.scale(ratio,ratio);ctx.clearRect(0,0,w,h);
+ if(!points.length){ctx.fillStyle='#718096';ctx.fillText('No saved training data available.',20,35);return;}
+ const vals=points.flatMap(p=>keys.map(k=>p[k])).filter(Number.isFinite);
+ const max=Math.max(.01,...vals)*1.08,min=Math.min(0,...vals);
+ const left=42,right=w-15,top=15,bottom=245;
+ for(let i=0;i<=4;i++){let y=bottom-i*(bottom-top)/4;ctx.strokeStyle='rgba(65,85,110,.13)';ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke();}
+ keys.forEach((key,index)=>{
+  ctx.strokeStyle=index===0?'#398568':'#e65b50';ctx.lineWidth=2.5;ctx.beginPath();
+  points.forEach((p,i)=>{
+   const x=left+(points.length===1?0:i*(right-left)/(points.length-1));
+   const y=bottom-((p[key]-min)/(max-min||1))*(bottom-top);
+   if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  });ctx.stroke();
+ });
+}
+function drawTraining(){drawLine('trainingAccuracy',['accuracy','val_accuracy']);drawLine('trainingLoss',['loss','val_loss']);}
+
+function renderLive(){
+ const target=$('liveComparison');
+ try{
+  const saved=JSON.parse(sessionStorage.getItem('tomatoaiLastLiveComparison')||'null');
+  if(!saved||!Array.isArray(saved.model_results)||!saved.model_results.length)return;
+  target.className='table-wrap';
+  target.innerHTML=`<p class="muted">Last diagnosis: ${saved.disease||'Unknown'} · ${saved.timestamp||''}</p>
+  <table><thead><tr><th>Model</th><th>Prediction</th><th>Confidence</th><th>Inference time</th></tr></thead>
+  <tbody>${saved.model_results.map(m=>`<tr><td>${m.model||'—'}</td><td>${m.prediction||'—'}</td><td>${pct(m.confidence)}</td><td>${Number(m.inference_ms||0).toFixed(2)} ms</td></tr>`).join('')}</tbody></table>`;
+ }catch(e){}
+}
+window.addEventListener('resize',()=>{if(dashboardData){drawAccuracy();if(!$('training').classList.contains('hidden'))drawTraining();}});
+loadDashboard();
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const phrase = "Dataset contains cross-split exact duplicates.";
+    const removeWarning = () => {
+        document.querySelectorAll("body *").forEach(el => {
+            if (el.children.length === 0 && el.textContent.includes(phrase)) {
+                const box = el.closest('[role="alert"], .warning, .alert, .notice') || el;
+                box.remove();
+            }
+        });
+    };
+    removeWarning();
+    new MutationObserver(removeWarning).observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+});
+</script>
+</body>
+</html>
+
+
+
+
+

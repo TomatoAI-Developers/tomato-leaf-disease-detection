@@ -140,28 +140,87 @@ def probability_for_prediction(model, probabilities, prediction):
     return float(probabilities[positions[0]] * 100)
 
 
-def get_recommendations(class_name):
-    if class_name == "Not_Tomato":
-        return {
-            "home": "Upload a clear image of a tomato leaf.",
-            "doctor": "This image was not classified as a tomato leaf.",
-            "expert": "Try again with a well-lit, focused tomato leaf image."
-        }
 
-    if class_name == "Tomato_Healthy":
-        return {
-            "home": "Continue regular watering and balanced plant care.",
-            "doctor": "No disease was identified by the primary model.",
-            "expert": "Monitor the plant regularly for any new symptoms."
-        }
+def get_recommendations(class_name):
+    """
+    Disease-specific integrated management recommendations.
+    Pesticide products and doses must be verified against
+    current Indian registrations and local agricultural advice.
+    """
 
     recommendations = {
-        "home": "Remove visibly affected leaves when appropriate and avoid wetting foliage.",
-        "doctor": "Confirm the diagnosis before applying any pesticide or fungicide.",
-        "expert": "Consult a local agricultural officer for treatment suited to the crop and region."
+        "Not_Tomato": {
+            "home": "Upload a clear, well-lit photograph showing an entire tomato leaf. Avoid photographs of other crops or unrelated objects.",
+            "doctor": "No tomato disease treatment can be recommended because the image was not identified as a tomato leaf.",
+            "expert": "Capture a focused photograph of a tomato leaf, including visible symptoms, and submit it again."
+        },
+
+        "Tomato_Healthy": {
+            "home": "Maintain consistent irrigation, avoid waterlogging, provide adequate plant spacing and remove old crop debris.",
+            "doctor": "No disease-specific pesticide or fungicide treatment is indicated by this prediction. Continue routine crop monitoring.",
+            "expert": "Inspect leaves regularly for new spots, curling, yellowing or pest activity. Maintain balanced nutrition and use healthy planting material."
+        },
+
+        "Tomato_Bacterial_spot": {
+            "home": "Remove severely affected leaves and crop debris. Avoid handling wet plants, overhead irrigation and working in the field when foliage is wet. Use disease-free seedlings and rotate away from tomato and other susceptible solanaceous crops.",
+            "doctor": "Bacterial spot is caused by bacteria, not fungi. Copper-based bactericide products may provide partial preventive suppression where registered for tomato, but copper-resistant bacterial populations can reduce effectiveness. Confirm the diagnosis before treatment.",
+            "expert": "Ask a plant pathologist or local Krishi Vigyan Kendra to confirm bacterial spot and advise on locally registered products. Do not reuse contaminated stakes, trays or tools without sanitation."
+        },
+
+        "Tomato_Early_blight": {
+            "home": "Remove infected lower leaves and fallen crop debris. Apply mulch to reduce soil splash, maintain adequate spacing and rotate with non-solanaceous crops.",
+            "doctor": "Early blight is a fungal disease caused by Alternaria solani. If disease pressure warrants it, use a fungicide specifically registered for tomato early blight and follow its label. Rotate fungicide modes of action to reduce resistance.",
+            "expert": "Consult a horticulture officer if lesions continue spreading. Use disease-free seed or transplants and avoid carrying infected tomato residues into the next crop."
+        },
+
+        "Tomato_Late_blight": {
+            "home": "Remove and safely dispose of confirmed infected plant parts. Improve field drainage, provide plant spacing and avoid prolonged leaf wetness. Inspect nearby tomato and potato crops.",
+            "doctor": "Late blight is caused by Phytophthora infestans and can spread rapidly in favourable weather. Obtain prompt diagnosis and use only a locally registered late-blight fungicide according to its label. Do not delay when symptoms are spreading quickly.",
+            "expert": "Contact a local agricultural officer or plant pathology laboratory urgently. Confirm the disease because late blight can be confused with other leaf spots. Remove volunteer tomato and potato plants that may maintain infection."
+        },
+
+        "Tomato_Leaf_Mold": {
+            "home": "Remove affected lower leaves, increase spacing and ventilation, and avoid wetting foliage. In protected cultivation, reduce humidity by improving ventilation, especially overnight.",
+            "doctor": "Leaf mold is a fungal disease favoured by high humidity. Where necessary, use a fungicide registered for tomato leaf mold and follow the label. Ensure suitable coverage and observe resistance-management guidance.",
+            "expert": "Ask a horticulture specialist to confirm leaf mold, particularly in greenhouse crops. Remove infected crop residues between crop cycles and use resistant varieties where available."
+        },
+
+        "Tomato_Mosaic_Virus": {
+            "home": "There is no curative treatment for a plant infected with tomato mosaic virus. Remove and safely destroy confirmed infected plants. Clean hands and disinfect cutting tools before working on healthy plants.",
+            "doctor": "Fungicides and ordinary insecticides do not cure a virus-infected plant. Use certified virus-free seed and resistant varieties where available. Avoid saving seed from suspected infected plants.",
+            "expert": "Seek confirmation from a plant pathology laboratory if symptoms are uncertain. Review seed source, tool sanitation and crop handling practices to reduce mechanical transmission."
+        },
+
+        "Tomato_Septoria_Leaf_Spot": {
+            "home": "Remove infected lower leaves, apply mulch to reduce soil splash, water at the plant base and improve spacing for airflow. Clear infected crop debris after harvest.",
+            "doctor": "Septoria leaf spot is fungal. A locally registered tomato fungicide may help slow disease spread when used early and according to its label. It will not restore leaves already damaged.",
+            "expert": "Consult a horticulture officer if defoliation progresses. Use disease-free transplants, rotate away from tomato and avoid working among wet plants."
+        },
+
+        "Tomato_Spider_Mites": {
+            "home": "Inspect the undersides of leaves for mites, fine webbing and stippling. Remove heavily infested leaves when practical and reduce plant water stress. Preserve beneficial predatory mites.",
+            "doctor": "Spider mites are pests, not fungal disease. If infestation is confirmed, consider a locally approved miticide or insecticidal soap where registered for tomato. Coverage of leaf undersides is important. Follow label directions and avoid harming beneficial organisms.",
+            "expert": "Ask an IPM specialist to identify the mite and assess infestation severity. Consider biological control using suitable predatory mites in protected cultivation. Avoid repeated use of the same acaricide group."
+        },
+
+        "Tomato_Target_Spot": {
+            "home": "Remove infected lower leaves and crop debris, improve spacing and airflow, avoid overhead irrigation and reduce prolonged leaf wetness.",
+            "doctor": "Target spot is associated with the fungus Corynespora cassiicola. If confirmed, use only a fungicide registered for the crop and disease in your region. Follow label instructions and rotate modes of action.",
+            "expert": "Seek confirmation from a plant pathology laboratory because target spot can resemble early blight and other leaf-spot diseases. Review field sanitation and crop rotation."
+        },
+
+        "Tomato_Yellow_Leaf_CurlVirus": {
+            "home": "There is no cure for plants already infected with tomato yellow leaf curl virus. Remove and safely destroy confirmed infected plants, control nearby weed hosts and use healthy seedlings.",
+            "doctor": "The disease is transmitted by whiteflies. Insecticides cannot cure an infected plant. Manage whiteflies using integrated pest management and only locally registered products when necessary. Use resistant varieties where available.",
+            "expert": "Consult a local agricultural officer about whitefly monitoring, insect-proof nursery netting, yellow sticky traps and locally suitable resistant varieties. Avoid moving infested seedlings between fields."
+        }
     }
 
-    return recommendations
+    return recommendations.get(class_name, {
+        "home": "Monitor the plant and avoid unnecessary pesticide application.",
+        "doctor": "The predicted class is not recognised. Confirm the disease before choosing a treatment.",
+        "expert": "Consult a local agricultural officer or plant pathology laboratory for diagnosis."
+    })
 
 
 def get_severity(class_name, confidence):
@@ -784,6 +843,148 @@ def generate_report():
         download_name="TomatoAI_Diagnostic_Report.pdf"
     )
 # --------------------------------------------------
+
+
+# TOMATOAI_MODEL_COMPARE_ROUTES_V1
+@app.route("/model-compare")
+def model_compare_page():
+    return render_template("model_compare.html")
+
+
+@app.route("/api/model-evaluation")
+def model_evaluation_api():
+    import csv
+    import json
+    from pathlib import Path
+
+    root = Path(app.root_path)
+
+    verifier_eval = (
+        root / "artifacts" / "phase3" / "verifier_v2_evaluation"
+        / "evaluation_20261107_210603_320865"
+    )
+    classical_eval = (
+        root / "artifacts" / "phase3" / "classical_ml"
+        / "run_20261107_211856" / "test_evaluation"
+    )
+    training_file = (
+        root / "artifacts" / "phase3" / "verifier_v2"
+        / "run_20261107_190658_190660" / "training_history.csv"
+    )
+
+    classes = [
+        "Not_Tomato",
+        "Tomato_Bacterial_spot",
+        "Tomato_Early_blight",
+        "Tomato_Healthy",
+        "Tomato_Late_blight",
+        "Tomato_Leaf_Mold",
+        "Tomato_Mosaic_Virus",
+        "Tomato_Septoria_Leaf_Spot",
+        "Tomato_Spider_Mites",
+        "Tomato_Target_Spot",
+        "Tomato_Yellow_Leaf_CurlVirus"
+    ]
+
+    model_files = {
+        "SVM": "svm_report.json",
+        "Logistic Regression": "logistic_regression_report.json",
+        "Random Forest": "random_forest_report.json",
+        "KNN": "knn_report.json",
+        "Decision Tree": "decision_tree_report.json",
+        "Extra Trees": "extra_trees_report.json",
+        "Gradient Boosting": "gradient_boosting_report.json"
+    }
+
+    models = []
+    confusion = {}
+
+    def read_json(path):
+        with open(path, "r", encoding="utf-8") as file:
+            return json.load(file)
+
+    def metrics_from_report(name, report, test_images):
+        macro = report.get("macro avg", {})
+        weighted = report.get("weighted avg", {})
+        return {
+            "name": name,
+            "accuracy": report.get("accuracy"),
+            "macro_precision": macro.get("precision"),
+            "macro_recall": macro.get("recall"),
+            "macro_f1": macro.get("f1-score"),
+            "weighted_f1": weighted.get("f1-score"),
+            "test_images": test_images,
+            "report": report
+        }
+
+    try:
+        summary = read_json(verifier_eval / "evaluation_summary.json")
+        mobile_report = read_json(verifier_eval / "classification_report.json")
+        test_images = summary.get("test_images", 4279)
+
+        models.append(metrics_from_report(
+            "MobileNetV2", mobile_report, test_images
+        ))
+
+        for name, filename in model_files.items():
+            report = read_json(classical_eval / filename)
+            models.append(metrics_from_report(name, report, test_images))
+
+        matrix_files = {
+            "MobileNetV2": verifier_eval / "confusion_matrix.csv",
+            "SVM": classical_eval / "svm_confusion.csv",
+            "Logistic Regression": classical_eval / "logistic_regression_confusion.csv",
+            "Random Forest": classical_eval / "random_forest_confusion.csv",
+            "KNN": classical_eval / "knn_confusion.csv",
+            "Decision Tree": classical_eval / "decision_tree_confusion.csv",
+            "Extra Trees": classical_eval / "extra_trees_confusion.csv",
+            "Gradient Boosting": classical_eval / "gradient_boosting_confusion.csv"
+        }
+
+        for name, path in matrix_files.items():
+            with open(path, "r", encoding="utf-8-sig", newline="") as file:
+                rows = list(csv.reader(file))
+            confusion[name] = [
+                [int(float(value)) for value in row if value.strip()]
+                for row in rows if row
+            ]
+
+        training = []
+        with open(training_file, "r", encoding="utf-8-sig", newline="") as file:
+            for row in csv.DictReader(file):
+                try:
+                    training.append({
+                        "stage": row.get("stage", ""),
+                        "epoch": float(row.get("epoch", 0)),
+                        "accuracy": float(row.get("accuracy", 0)),
+                        "loss": float(row.get("loss", 0)),
+                        "val_accuracy": float(row.get("val_accuracy", 0)),
+                        "val_loss": float(row.get("val_loss", 0))
+                    })
+                except (ValueError, TypeError):
+                    continue
+
+        return jsonify({
+            "models": models,
+            "classes": classes,
+            "confusion": confusion,
+            "training": training,
+            "test_images": test_images,
+            "warning": summary.get(
+                "evaluation_warning",
+                "The dataset audit identified exact duplicate images across splits. "
+                "Test results should not be interpreted as leakage-free estimates."
+            )
+        })
+
+    except Exception as error:
+        app.logger.exception("Model evaluation data could not be loaded")
+        return jsonify({
+            "error": "Could not load saved evaluation data.",
+            "details": str(error)
+        }), 500
+
+
 # RUN SERVER
 # --------------------------------------------------
 
