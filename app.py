@@ -1,4 +1,5 @@
 import io
+import base64
 import os
 import time
 import threading
@@ -10,10 +11,15 @@ import joblib
 import tensorflow as tf
 
 from flask import Flask, render_template, request, jsonify, send_file
+from explainability.gradcam import generate_gradcam
+from explainability.image_utils import image_to_data_url
 from tensorflow.keras.models import load_model, Model
 
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import HRFlowable
+from reportlab.platypus import KeepTogether
+from reportlab.platypus import Image as RLImage
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import mm
@@ -388,12 +394,65 @@ def predict():
     try:
         image_array = preprocess_uploaded_image(uploaded_file.stream)
 
+        # Preserve the original uploaded photograph for Grad-CAM display.
+        original_image = None
+        original_image_url = None
+        gradcam_image_url = None
+
+        try:
+            uploaded_file.stream.seek(0)
+
+            with Image.open(uploaded_file.stream) as source_image:
+                original_image = ImageOps.exif_transpose(
+                    source_image
+                ).convert("RGB").copy()
+
+            original_image.thumbnail(
+                (640, 640),
+                Image.Resampling.LANCZOS
+            )
+
+            original_image_url = image_to_data_url(original_image)
+
+        except Exception as image_error:
+            app.logger.warning(
+                "Original image preview unavailable: %s",
+                image_error
+            )
+
         (
             predicted_class,
             probabilities,
             confidence,
             model_results
         ) = run_all_models(image_array)
+
+        # Optional Grad-CAM: only explain the final matching tomato class.
+        try:
+            mobilenet_index = int(np.argmax(probabilities))
+            mobilenet_class = CLASS_NAMES[mobilenet_index]
+
+            if (
+                predicted_class != "Not_Tomato"
+                and predicted_class == mobilenet_class
+                and original_image is not None
+            ):
+                gradcam_overlay = generate_gradcam(
+                    mobilenet,
+                    image_array,
+                    mobilenet_index
+                )
+
+                if gradcam_overlay is not None:
+                    gradcam_image_url = image_to_data_url(
+                        gradcam_overlay
+                    )
+
+        except Exception:
+            app.logger.exception(
+                "Grad-CAM unavailable; continuing normal prediction."
+            )
+            gradcam_image_url = None
 
         top_indices = np.argsort(probabilities)[::-1][:3]
 
@@ -434,6 +493,12 @@ def predict():
                 "independent, leakage-free generalization."
             ),
             "pdf_enabled": True,
+            "original_image": original_image_url,
+            "gradcam_image": gradcam_image_url,
+            "gradcam_label": (
+                "AI Attention Visualization (Grad-CAM)"
+                if gradcam_image_url else None
+            ),
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
 
@@ -770,6 +835,91 @@ def generate_report():
             small_style
         ))
 
+
+    # OPTIONAL GRAD-CAM VISUALIZATION
+    original_url = data.get("original_image")
+    gradcam_url = data.get("gradcam_image")
+
+    if original_url and gradcam_url:
+        try:
+            def pdf_image_from_data_url(data_url):
+                if not isinstance(data_url, str):
+                    return None
+
+                if not data_url.startswith("data:image/") or "," not in data_url:
+                    return None
+
+                encoded = data_url.split(",", 1)[1]
+                raw = base64.b64decode(encoded, validate=True)
+
+                with Image.open(io.BytesIO(raw)) as source_image:
+                    prepared = source_image.convert("RGB")
+                    prepared.thumbnail((900, 700), Image.Resampling.LANCZOS)
+
+                    image_buffer = io.BytesIO()
+                    prepared.save(image_buffer, format="JPEG", quality=88)
+                    image_buffer.seek(0)
+
+                    image_width, image_height = prepared.size
+
+                max_width = 78 * mm
+                max_height = 58 * mm
+                scale = min(
+                    max_width / image_width,
+                    max_height / image_height
+                )
+
+                return RLImage(
+                    image_buffer,
+                    width=image_width * scale,
+                    height=image_height * scale
+                )
+
+            original_pdf_image = pdf_image_from_data_url(original_url)
+            gradcam_pdf_image = pdf_image_from_data_url(gradcam_url)
+
+            if original_pdf_image and gradcam_pdf_image:
+                story.append(Paragraph(
+                    "AI Attention Visualization (Grad-CAM)",
+                    section_style
+                ))
+                story.append(Paragraph(
+                    "Original uploaded photograph and model attention overlay. "
+                    "Highlighted regions indicate model attention, not confirmed "
+                    "disease locations.",
+                    small_style
+                ))
+                story.append(Spacer(1, 7))
+
+                image_labels = [[
+                    Paragraph("<b>Original Uploaded Image</b>", table_style),
+                    Paragraph("<b>Grad-CAM Heatmap Overlay</b>", table_style)
+                ]]
+
+                image_table = Table(
+                    image_labels + [[original_pdf_image, gradcam_pdf_image]],
+                    colWidths=[84 * mm, 84 * mm]
+                )
+
+                image_table.setStyle(TableStyle([
+                    ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                    ("BACKGROUND", (0, 0), (-1, 0), LIGHT),
+                    ("BOX", (0, 0), (-1, -1), 0.6, BORDER),
+                    ("INNERGRID", (0, 0), (-1, -1), 0.5, BORDER),
+                    ("TOPPADDING", (0, 0), (-1, -1), 8),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 5),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 5)
+                ]))
+
+                story.append(image_table)
+                story.append(Spacer(1, 6))
+
+        except Exception:
+            app.logger.exception(
+                "Grad-CAM PDF section skipped; continuing report generation."
+            )
 
     # RECOMMENDATIONS
     story.append(Paragraph(

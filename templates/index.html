@@ -1957,6 +1957,27 @@
           </table>
         </div>` : '';
 
+      const gradcamHtml = d.original_image && d.gradcam_image ? `
+        <div class="rec-section">
+          <h4>🔍 AI Attention Visualization (Grad-CAM)</h4>
+          <p style="color:var(--muted);font-size:.85rem;line-height:1.6;">
+            See the uploaded image alongside the areas that influenced the AI model's prediction.
+            Highlighted regions indicate model attention, not confirmed disease locations.
+          </p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+            <div>
+              <p style="font-size:.82rem;font-weight:700;margin-bottom:8px;">Original Uploaded Image</p>
+              <img src="${d.original_image}" alt="Original uploaded tomato leaf"
+                style="width:100%;max-height:300px;object-fit:contain;border-radius:12px;background:#f5f5f5;">
+            </div>
+            <div>
+              <p style="font-size:.82rem;font-weight:700;margin-bottom:8px;">Grad-CAM Heatmap Overlay</p>
+              <img src="${d.gradcam_image}" alt="Grad-CAM attention heatmap"
+                style="width:100%;max-height:300px;object-fit:contain;border-radius:12px;background:#f5f5f5;">
+            </div>
+          </div>
+        </div>` : '';
+
       return `
     <div class="result-card">
       <p class="section-tag" style="text-align:left;margin-bottom:.6rem;">✦ Diagnosis Complete</p>
@@ -1990,6 +2011,8 @@
       </div>
 
       ${comparisonHtml}
+
+      ${gradcamHtml}
 
       <div class="rec-section">
         <h4>💡 Treatment Recommendations</h4>
