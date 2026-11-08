@@ -1187,6 +1187,102 @@
   
 /* Live comparison is now displayed on the separate dashboard. */
 #live-model-comparison{display:none!important;}
+
+/* TomatoAI PDF confirmation dialog */
+.pdf-confirm-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem;
+  background: rgba(20, 38, 52, .58);
+  backdrop-filter: blur(9px);
+}
+.pdf-confirm-modal.open { display: flex; }
+.pdf-confirm-dialog {
+  width: min(540px, 100%);
+  padding: clamp(1.3rem, 4vw, 2rem);
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,.8);
+  background: #fffefa;
+  color: #263d4b;
+  box-shadow: 0 25px 80px rgba(0,0,0,.25);
+  animation: pdfModalIn .2s ease-out;
+}
+@keyframes pdfModalIn {
+  from { opacity: 0; transform: translateY(12px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.pdf-confirm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.pdf-confirm-kicker {
+  color: #25804e;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  margin-bottom: .45rem;
+}
+.pdf-confirm-dialog h2 {
+  color: #203b4b;
+  font-size: 1.45rem;
+  margin: 0;
+}
+.pdf-confirm-close {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #dce5df;
+  border-radius: 11px;
+  background: #f7faf7;
+  color: #344b57;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+.pdf-confirm-description {
+  margin: 1.15rem 0 1.35rem;
+  color: #526673;
+  line-height: 1.6;
+}
+.pdf-confirm-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .65rem;
+}
+.pdf-confirm-actions button {
+  min-height: 52px;
+  padding: .8rem .65rem;
+  border: 0;
+  border-radius: 11px;
+  font-size: .9rem;
+  font-weight: 750;
+  cursor: pointer;
+  transition: transform .2s, opacity .2s;
+}
+.pdf-confirm-actions button:hover { transform: translateY(-2px); }
+.pdf-confirm-actions button:disabled {
+  opacity: .6;
+  cursor: wait;
+  transform: none;
+}
+.pdf-include-btn { background: #16834b; color: white; }
+.pdf-diagnosis-btn { background: #e7edf2; color: #263d4b; }
+.pdf-confirm-note {
+  margin-top: 1rem;
+  color: #73828b;
+  font-size: .76rem;
+  line-height: 1.5;
+}
+@media(max-width:480px) {
+  .pdf-confirm-actions { grid-template-columns: 1fr; }
+  .pdf-confirm-dialog { border-radius: 17px; }
+}
+
 </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -1917,14 +2013,40 @@
   `;
     }
 
-        async function downloadReport() {
+        function downloadReport() {
       if (!lastResult) return;
+      const modal = document.getElementById("pdf-confirm-modal");
+      if (!modal) {
+        console.error("PDF confirmation modal was not found.");
+        return;
+      }
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      document.getElementById("pdf-include-btn").focus();
+    }
 
-      const question = window.t
-        ? window.t("pdfQuestion")
-        : "Include the comparison of all 8 models in the PDF report?\n\nYES = Include all model predictions and timings.\nNO = Diagnosis and recommendations only.";
+    function closePdfModal() {
+      const modal = document.getElementById("pdf-confirm-modal");
+      if (!modal || window.pdfReportInProgress) return;
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    }
 
-      const includeComparison = window.confirm(question);
+    async function confirmDownloadReport(includeComparison) {
+      if (!lastResult || window.pdfReportInProgress) return;
+
+      const modal = document.getElementById("pdf-confirm-modal");
+      const buttons = modal.querySelectorAll("button");
+      window.pdfReportInProgress = true;
+      buttons.forEach(button => button.disabled = true);
+
+      const selectedButton = document.getElementById(
+        includeComparison ? "pdf-include-btn" : "pdf-diagnosis-btn"
+      );
+      const originalText = selectedButton.textContent;
+      selectedButton.textContent = "Generating PDF...";
 
       const reportData = {
         ...lastResult,
@@ -1939,8 +2061,7 @@
         });
 
         if (!response.ok) {
-          alert("PDF generation failed.");
-          return;
+          throw new Error("PDF generation failed. HTTP " + response.status);
         }
 
         const blob = await response.blob();
@@ -1953,13 +2074,26 @@
         link.remove();
         setTimeout(() => URL.revokeObjectURL(url), 2000);
 
+        modal.classList.remove("open");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+
       } catch (error) {
         console.error("PDF error:", error);
         alert("Unable to generate PDF. Please try again.");
+      } finally {
+        window.pdfReportInProgress = false;
+        buttons.forEach(button => button.disabled = false);
+        selectedButton.textContent = originalText;
       }
     }
 
-    /* ═══════════════════════════════════════════════
+    document.addEventListener("keydown", function(event) {
+      const modal = document.getElementById("pdf-confirm-modal");
+      if (event.key === "Escape" && modal && modal.classList.contains("open")) {
+        closePdfModal();
+      }
+    });/* ═══════════════════════════════════════════════
        FLOATING PARTICLES SPAWN
     ═══════════════════════════════════════════════ */
     function spawnParticle() {
@@ -2359,6 +2493,43 @@
 
 
 
+
+
+<div class="pdf-confirm-modal" id="pdf-confirm-modal"
+     role="dialog" aria-modal="true"
+     aria-labelledby="pdf-confirm-title" aria-hidden="true"
+     onclick="if(event.target === this) closePdfModal()">
+  <div class="pdf-confirm-dialog" role="document">
+    <div class="pdf-confirm-header">
+      <div>
+        <div class="pdf-confirm-kicker">TomatoAI · Report generator</div>
+        <h2 id="pdf-confirm-title">Download PDF Report</h2>
+      </div>
+      <button class="pdf-confirm-close" type="button"
+              aria-label="Close dialog" onclick="closePdfModal()">×</button>
+    </div>
+
+    <p class="pdf-confirm-description">
+      Would you like to include the comparison of all 8 models in the PDF report?
+    </p>
+
+    <div class="pdf-confirm-actions">
+      <button class="pdf-include-btn" id="pdf-include-btn" type="button"
+              onclick="confirmDownloadReport(true)">
+        YES — Include comparison
+      </button>
+      <button class="pdf-diagnosis-btn" id="pdf-diagnosis-btn" type="button"
+              onclick="confirmDownloadReport(false)">
+        NO — Diagnosis only
+      </button>
+    </div>
+
+    <p class="pdf-confirm-note">
+      Your selection determines whether model predictions and inference timings
+      are included in the downloaded report.
+    </p>
+  </div>
+</div>
 
 </body>
 
