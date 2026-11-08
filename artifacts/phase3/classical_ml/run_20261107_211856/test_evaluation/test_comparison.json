@@ -1,0 +1,73 @@
+{
+    "evaluation": "test",
+    "test_images": 4279,
+    "class_count": 11,
+    "feature_extractor": "MobileNetV2 V2",
+    "pca_dimensions": 256,
+    "results": [
+        {
+            "model": "SVM",
+            "test_accuracy": 0.9362000467398925,
+            "macro_precision": 0.9288976672893678,
+            "macro_recall": 0.9254600509998681,
+            "macro_f1": 0.9268270065720308,
+            "weighted_f1": 0.935866629995923,
+            "classifier_inference_ms_per_image": 0.013468871250066086
+        },
+        {
+            "model": "KNN",
+            "test_accuracy": 0.9369011451273662,
+            "macro_precision": 0.9267985331029323,
+            "macro_recall": 0.9264048540185901,
+            "macro_f1": 0.9242267710366118,
+            "weighted_f1": 0.9357875336807527,
+            "classifier_inference_ms_per_image": 0.16174970789316048
+        },
+        {
+            "model": "Logistic Regression",
+            "test_accuracy": 0.9315260574900678,
+            "macro_precision": 0.9221761816242502,
+            "macro_recall": 0.922126685167153,
+            "macro_f1": 0.9220024454327231,
+            "weighted_f1": 0.9317282912420555,
+            "classifier_inference_ms_per_image": 0.0008355223685398534
+        },
+        {
+            "model": "Gradient Boosting",
+            "test_accuracy": 0.9207758822154709,
+            "macro_precision": 0.9155239845660744,
+            "macro_recall": 0.9039088835402915,
+            "macro_f1": 0.9087071978223679,
+            "weighted_f1": 0.9205705622574489,
+            "classifier_inference_ms_per_image": 0.043179785001776605
+        },
+        {
+            "model": "Random Forest",
+            "test_accuracy": 0.8913297499415751,
+            "macro_precision": 0.890748387431011,
+            "macro_recall": 0.8567947643080216,
+            "macro_f1": 0.8671284895264104,
+            "weighted_f1": 0.8875789993868057,
+            "classifier_inference_ms_per_image": 0.03771734053713469
+        },
+        {
+            "model": "Extra Trees",
+            "test_accuracy": 0.8924982472540313,
+            "macro_precision": 0.9044476368994476,
+            "macro_recall": 0.8530005248264548,
+            "macro_f1": 0.8649803631120896,
+            "weighted_f1": 0.886032330648625,
+            "classifier_inference_ms_per_image": 0.035678920331497034
+        },
+        {
+            "model": "Decision Tree",
+            "test_accuracy": 0.7756485160084132,
+            "macro_precision": 0.7331013845157593,
+            "macro_recall": 0.7308097340992815,
+            "macro_f1": 0.7317803343004101,
+            "weighted_f1": 0.7760236848666496,
+            "classifier_inference_ms_per_image": 0.0006807198085031879
+        }
+    ],
+    "warning": "Cross-split exact duplicates were identified. These test scores are not independent or leakage-free."
+}

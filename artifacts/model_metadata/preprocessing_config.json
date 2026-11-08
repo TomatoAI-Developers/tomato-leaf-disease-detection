@@ -1,0 +1,9 @@
+{
+    "target_size": [
+        224,
+        224
+    ],
+    "batch_size": 32,
+    "normalization": "min_max_0_1",
+    "color_mode": "rgb"
+}

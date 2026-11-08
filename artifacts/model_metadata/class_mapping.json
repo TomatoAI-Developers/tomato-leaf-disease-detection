@@ -1,0 +1,46 @@
+{
+    "Not_Tomato": {
+        "index": 0,
+        "display_name": "Not Tomato"
+    },
+    "Tomato_Bacterial_spot": {
+        "index": 1,
+        "display_name": "Tomato Bacterial Spot"
+    },
+    "Tomato_Early_blight": {
+        "index": 2,
+        "display_name": "Tomato Early Blight"
+    },
+    "Tomato_Healthy": {
+        "index": 3,
+        "display_name": "Tomato Healthy"
+    },
+    "Tomato_Late_blight": {
+        "index": 4,
+        "display_name": "Late Blight"
+    },
+    "Tomato_Leaf_Mold": {
+        "index": 5,
+        "display_name": "Tomato Leaf Mold"
+    },
+    "Tomato_Mosaic_Virus": {
+        "index": 6,
+        "display_name": "Tomato Mosaic Virus"
+    },
+    "Tomato_Septoria_Leaf_Spot": {
+        "index": 7,
+        "display_name": "Tomato Septoria Leaf Spot"
+    },
+    "Tomato_Spider_Mites": {
+        "index": 8,
+        "display_name": "Tomato Spider Mites"
+    },
+    "Tomato_Target_Spot": {
+        "index": 9,
+        "display_name": "Tomato Target Spot"
+    },
+    "Tomato_Yellow_Leaf_CurlVirus": {
+        "index": 10,
+        "display_name": "Yellow Leaf Curl Virus"
+    }
+}

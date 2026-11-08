@@ -1,0 +1,58 @@
+# Python virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Private credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Editor settings
+.idea/
+.vscode/*
+!.vscode/settings.json
+
+# Operating system
+.DS_Store
+Thumbs.db
+
+# Temporary files and logs
+*.log
+*.tmp
+temp/
+tmp/
+
+# Build files
+build/
+dist/
+*.egg-info/
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Generated browser test files
+language_test.html
+language_test.pdf
+language_test_chrome.pdf
+
+dataset/
+# Old application backups
+app_backup_*.py
+templates/index_backup.html
+templates/index_before_*.html
+
+# Old repair and language migration scripts
+fix_language.py
+install_tomatoai_language.py
+apply_tomatoai_updates.py
+repair_tomatoai.py

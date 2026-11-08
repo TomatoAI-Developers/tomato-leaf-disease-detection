@@ -1,0 +1,7 @@
+1. KNN: Accuracy=1.0000, Macro F1=1.0000, Weighted F1=1.0000
+2. Extra Trees: Accuracy=1.0000, Macro F1=1.0000, Weighted F1=1.0000
+3. Random Forest: Accuracy=0.9998, Macro F1=0.9999, Weighted F1=0.9998
+4. Gradient Boosting: Accuracy=0.9920, Macro F1=0.9904, Weighted F1=0.9920
+5. Logistic Regression: Accuracy=0.9899, Macro F1=0.9885, Weighted F1=0.9899
+6. SVM: Accuracy=0.9702, Macro F1=0.9657, Weighted F1=0.9700
+7. Decision Tree: Accuracy=0.9634, Macro F1=0.9572, Weighted F1=0.9634

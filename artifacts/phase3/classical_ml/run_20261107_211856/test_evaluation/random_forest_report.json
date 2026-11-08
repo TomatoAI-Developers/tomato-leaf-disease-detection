@@ -1,0 +1,81 @@
+{
+    "Not_Tomato": {
+        "precision": 0.9979818365287588,
+        "recall": 1.0,
+        "f1-score": 0.998989898989899,
+        "support": 989.0
+    },
+    "Tomato_Bacterial_spot": {
+        "precision": 0.8683206106870229,
+        "recall": 0.9420289855072463,
+        "f1-score": 0.9036742800397219,
+        "support": 483.0
+    },
+    "Tomato_Early_blight": {
+        "precision": 0.8679245283018868,
+        "recall": 0.4928571428571429,
+        "f1-score": 0.6287015945330297,
+        "support": 280.0
+    },
+    "Tomato_Healthy": {
+        "precision": 0.9583333333333334,
+        "recall": 0.968421052631579,
+        "f1-score": 0.9633507853403142,
+        "support": 380.0
+    },
+    "Tomato_Late_blight": {
+        "precision": 0.8178807947019867,
+        "recall": 0.9338374291115312,
+        "f1-score": 0.8720211827007943,
+        "support": 529.0
+    },
+    "Tomato_Leaf_Mold": {
+        "precision": 0.8778280542986425,
+        "recall": 0.7578125,
+        "f1-score": 0.8134171907756813,
+        "support": 256.0
+    },
+    "Tomato_Mosaic_Virus": {
+        "precision": 0.9772727272727273,
+        "recall": 0.7889908256880734,
+        "f1-score": 0.8730964467005076,
+        "support": 109.0
+    },
+    "Tomato_Septoria_Leaf_Spot": {
+        "precision": 0.8333333333333334,
+        "recall": 0.8674698795180723,
+        "f1-score": 0.8500590318772137,
+        "support": 415.0
+    },
+    "Tomato_Spider_Mites": {
+        "precision": 0.8452914798206278,
+        "recall": 0.90625,
+        "f1-score": 0.8747099767981439,
+        "support": 416.0
+    },
+    "Tomato_Target_Spot": {
+        "precision": 0.7632398753894081,
+        "recall": 0.7852564102564102,
+        "f1-score": 0.7740916271721959,
+        "support": 312.0
+    },
+    "Tomato_Yellow_Leaf_CurlVirus": {
+        "precision": 0.9908256880733946,
+        "recall": 0.9818181818181818,
+        "f1-score": 0.9863013698630136,
+        "support": 110.0
+    },
+    "accuracy": 0.8913297499415751,
+    "macro avg": {
+        "precision": 0.890748387431011,
+        "recall": 0.8567947643080216,
+        "f1-score": 0.8671284895264104,
+        "support": 4279.0
+    },
+    "weighted avg": {
+        "precision": 0.8932204559941069,
+        "recall": 0.8913297499415751,
+        "f1-score": 0.8875789993868057,
+        "support": 4279.0
+    }
+}

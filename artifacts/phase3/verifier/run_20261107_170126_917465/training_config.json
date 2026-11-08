@@ -1,0 +1,48 @@
+{
+    "model": "MobileNetV2",
+    "model_type": "11-class tomato verifier",
+    "input_shape": [
+        224,
+        224,
+        3
+    ],
+    "input_range": [
+        0,
+        1
+    ],
+    "backbone_pretrained": "ImageNet",
+    "backbone_trainable": false,
+    "batch_size": 16,
+    "epochs_max": 15,
+    "learning_rate": 0.0001,
+    "optimizer": "Adam",
+    "loss": "sparse_categorical_crossentropy",
+    "class_names": [
+        "Not_Tomato",
+        "Tomato_Bacterial_spot",
+        "Tomato_Early_blight",
+        "Tomato_Healthy",
+        "Tomato_Late_blight",
+        "Tomato_Leaf_Mold",
+        "Tomato_Mosaic_Virus",
+        "Tomato_Septoria_Leaf_Spot",
+        "Tomato_Spider_Mites",
+        "Tomato_Target_Spot",
+        "Tomato_Yellow_Leaf_CurlVirus"
+    ],
+    "class_weights": {
+        "0": 0.3288268537464679,
+        "1": 0.7689109136477558,
+        "2": 1.649437927663734,
+        "3": 1.0774203847074786,
+        "4": 0.852209595959596,
+        "5": 1.7631922675026124,
+        "6": 4.648415977961433,
+        "7": 0.91308170995671,
+        "8": 1.0025995246583481,
+        "9": 1.2031194295900178,
+        "10": 4.090606060606061
+    },
+    "hardware": "Windows CPU",
+    "seed": 42
+}

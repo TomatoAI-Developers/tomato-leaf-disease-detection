@@ -1,0 +1,102 @@
+{
+    "project": "TomatoAI",
+    "feature_extractor": "MobileNetV2 V2",
+    "feature_dimensions": 1280,
+    "pca_dimensions": 256,
+    "training_images": 13499,
+    "validation_images": 5243,
+    "class_names": [
+        "Not_Tomato",
+        "Tomato_Bacterial_spot",
+        "Tomato_Early_blight",
+        "Tomato_Healthy",
+        "Tomato_Late_blight",
+        "Tomato_Leaf_Mold",
+        "Tomato_Mosaic_Virus",
+        "Tomato_Septoria_Leaf_Spot",
+        "Tomato_Spider_Mites",
+        "Tomato_Target_Spot",
+        "Tomato_Yellow_Leaf_CurlVirus"
+    ],
+    "selection_metric": "validation_macro_f1",
+    "models": [
+        {
+            "model": "KNN",
+            "accuracy": 1.0,
+            "macro_precision": 1.0,
+            "macro_recall": 1.0,
+            "macro_f1": 1.0,
+            "weighted_f1": 1.0,
+            "training_seconds": 0.008,
+            "inference_ms_per_image": 0.1324,
+            "model_file": "knn.joblib"
+        },
+        {
+            "model": "Extra Trees",
+            "accuracy": 1.0,
+            "macro_precision": 1.0,
+            "macro_recall": 1.0,
+            "macro_f1": 1.0,
+            "weighted_f1": 1.0,
+            "training_seconds": 5.237,
+            "inference_ms_per_image": 0.0268,
+            "model_file": "extra_trees.joblib"
+        },
+        {
+            "model": "Random Forest",
+            "accuracy": 0.9998092695021934,
+            "macro_precision": 0.9999227620298139,
+            "macro_recall": 0.9998148491020181,
+            "macro_f1": 0.9998686947848082,
+            "weighted_f1": 0.9998092128191287,
+            "training_seconds": 21.813,
+            "inference_ms_per_image": 0.0196,
+            "model_file": "random_forest.joblib"
+        },
+        {
+            "model": "Gradient Boosting",
+            "accuracy": 0.9919893190921228,
+            "macro_precision": 0.9913067509166681,
+            "macro_recall": 0.9894818435595867,
+            "macro_f1": 0.9903594349108659,
+            "weighted_f1": 0.9919838390905574,
+            "training_seconds": 28.631,
+            "inference_ms_per_image": 0.0465,
+            "model_file": "gradient_boosting.joblib"
+        },
+        {
+            "model": "Logistic Regression",
+            "accuracy": 0.9898912836162502,
+            "macro_precision": 0.9890438539934828,
+            "macro_recall": 0.9878841330709739,
+            "macro_f1": 0.9884505488670576,
+            "weighted_f1": 0.9898666218371809,
+            "training_seconds": 5.877,
+            "inference_ms_per_image": 0.0012,
+            "model_file": "logistic_regression.joblib"
+        },
+        {
+            "model": "SVM",
+            "accuracy": 0.9702460423421705,
+            "macro_precision": 0.9689125058176312,
+            "macro_recall": 0.9630110535052752,
+            "macro_f1": 0.9656962086817548,
+            "weighted_f1": 0.9700092316026397,
+            "training_seconds": 36.725,
+            "inference_ms_per_image": 0.0126,
+            "model_file": "svm.joblib"
+        },
+        {
+            "model": "Decision Tree",
+            "accuracy": 0.9633797444211329,
+            "macro_precision": 0.9582462087484479,
+            "macro_recall": 0.9574533542147038,
+            "macro_f1": 0.9571771367803731,
+            "weighted_f1": 0.9634145983942063,
+            "training_seconds": 6.304,
+            "inference_ms_per_image": 0.0006,
+            "model_file": "decision_tree.joblib"
+        }
+    ],
+    "warning": "Validation results are used for model selection. Cross-split duplicate images were identified in the dataset. Test results must be interpreted with this limitation."
+}

@@ -1,0 +1,86 @@
+{
+    "created_at": "2026-11-07T16:34:26",
+    "image_size": [
+        224,
+        224
+    ],
+    "batch_size": 16,
+    "verifier_class_count": 11,
+    "disease_class_count": 10,
+    "verifier_class_names": [
+        "Not_Tomato",
+        "Tomato_Bacterial_spot",
+        "Tomato_Early_blight",
+        "Tomato_Healthy",
+        "Tomato_Late_blight",
+        "Tomato_Leaf_Mold",
+        "Tomato_Mosaic_Virus",
+        "Tomato_Septoria_Leaf_Spot",
+        "Tomato_Spider_Mites",
+        "Tomato_Target_Spot",
+        "Tomato_Yellow_Leaf_CurlVirus"
+    ],
+    "disease_class_names": [
+        "Tomato_Bacterial_spot",
+        "Tomato_Early_blight",
+        "Tomato_Healthy",
+        "Tomato_Late_blight",
+        "Tomato_Leaf_Mold",
+        "Tomato_Mosaic_Virus",
+        "Tomato_Septoria_Leaf_Spot",
+        "Tomato_Spider_Mites",
+        "Tomato_Target_Spot",
+        "Tomato_Yellow_Leaf_CurlVirus"
+    ],
+    "counts_by_split": {
+        "train": {
+            "Not_Tomato": 3732,
+            "Tomato_Bacterial_spot": 1596,
+            "Tomato_Early_blight": 744,
+            "Tomato_Healthy": 1139,
+            "Tomato_Late_blight": 1440,
+            "Tomato_Leaf_Mold": 696,
+            "Tomato_Mosaic_Virus": 264,
+            "Tomato_Septoria_Leaf_Spot": 1344,
+            "Tomato_Spider_Mites": 1224,
+            "Tomato_Target_Spot": 1020,
+            "Tomato_Yellow_Leaf_CurlVirus": 300
+        },
+        "validation": {
+            "Not_Tomato": 1176,
+            "Tomato_Bacterial_spot": 588,
+            "Tomato_Early_blight": 300,
+            "Tomato_Healthy": 491,
+            "Tomato_Late_blight": 564,
+            "Tomato_Leaf_Mold": 312,
+            "Tomato_Mosaic_Virus": 132,
+            "Tomato_Septoria_Leaf_Spot": 504,
+            "Tomato_Spider_Mites": 612,
+            "Tomato_Target_Spot": 420,
+            "Tomato_Yellow_Leaf_CurlVirus": 144
+        },
+        "test": {
+            "Not_Tomato": 989,
+            "Tomato_Bacterial_spot": 483,
+            "Tomato_Early_blight": 280,
+            "Tomato_Healthy": 380,
+            "Tomato_Late_blight": 529,
+            "Tomato_Leaf_Mold": 256,
+            "Tomato_Mosaic_Virus": 109,
+            "Tomato_Septoria_Leaf_Spot": 415,
+            "Tomato_Spider_Mites": 416,
+            "Tomato_Target_Spot": 312,
+            "Tomato_Yellow_Leaf_CurlVirus": 110
+        }
+    },
+    "augmentation": "training split only",
+    "normalization": "float32 [0,1], clipped after augmentation",
+    "duplicate_scan": {
+        "unique_md5_hashes": 17270,
+        "cross_split_exact_duplicate_pairs": 5751,
+        "hashes_present_in_multiple_splits": 5737,
+        "method": "Chunked MD5; cross-split pair combinations only"
+    },
+    "evaluation_warning": "Phase 1 found cross-split duplicates. Do not describe test results as independent or leakage-free.",
+    "preservation": "Original dataset, data_audit, and artifacts/model_metadata are not modified."
+}

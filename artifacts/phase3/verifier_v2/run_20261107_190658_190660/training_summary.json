@@ -1,0 +1,10 @@
+{
+    "selected_stage": 2,
+    "selected_validation_loss": 0.45887184143066406,
+    "stage1_validation_loss": 1.142905592918396,
+    "stage2_validation_loss": 0.45887184143066406,
+    "stage1_epochs_completed": 5,
+    "stage2_epochs_completed": 10,
+    "best_model": "best_verifier_v2.keras",
+    "test_evaluation": "Not performed"
+}

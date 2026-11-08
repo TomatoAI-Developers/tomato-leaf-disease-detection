@@ -1,0 +1,12 @@
+Class,Train,Validation,Test
+Not_Tomato,3732,1176,989
+Tomato_Bacterial_spot,1596,588,483
+Tomato_Early_blight,744,300,280
+Tomato_Healthy,1139,491,380
+Tomato_Late_blight,1440,564,529
+Tomato_Leaf_Mold,696,312,256
+Tomato_Mosaic_Virus,264,132,109
+Tomato_Septoria_Leaf_Spot,1344,504,415
+Tomato_Spider_Mites,1224,612,416
+Tomato_Target_Spot,1020,420,312
+Tomato_Yellow_Leaf_CurlVirus,300,144,110

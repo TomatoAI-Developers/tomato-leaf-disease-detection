@@ -1,0 +1,11 @@
+{
+    "model": "MobileNetV2 Tomato Verifier",
+    "test_images": 4279,
+    "class_count": 11,
+    "test_accuracy": 0.7342837111474644,
+    "macro_precision": 0.7254841765065235,
+    "macro_recall": 0.6837003847064957,
+    "macro_f1": 0.672451797858418,
+    "weighted_f1": 0.7179870654560484,
+    "evaluation_warning": "Dataset contains cross-split exact duplicates. Test results are not independent or leakage-free."
+}
